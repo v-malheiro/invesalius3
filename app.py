@@ -314,6 +314,8 @@ def parse_command_line():
 
     parser.add_argument("--remote-host", action="store", dest="remote_host")
 
+    parser.add_argument("--server", dest="server", nargs=2, help="Creates a relay server inside invesalius.")
+
     parser.add_argument("-s", "--save", help="Save the project after an import.")
 
     parser.add_argument(
@@ -598,6 +600,21 @@ def main(connection=None, remote_host=None):
     from invesalius.net.neuronavigation_api import NeuronavigationApi
 
     NeuronavigationApi(connection)
+
+    print(args.server)
+
+    if args.server is not None:
+        import scripts.relay_server as relay
+        from invesalius.net.remote_control import RemoteControl
+
+        host=args.server[0]
+        port=int(args.server[1])
+
+        relay.start_server(host, port)
+
+        url = 'http://{}:{}'.format(host, port)
+        remote_control = RemoteControl(url)
+        remote_control.connect()
 
     if args.no_gui:
         non_gui_startup(args)

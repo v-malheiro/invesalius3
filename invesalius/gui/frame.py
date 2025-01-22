@@ -155,6 +155,7 @@ class Frame(wx.Frame):
         sub(self._ShowContentPanel, "Show content panel")
         sub(self._ShowImportPanel, "Show import panel in frame")
         sub(self.ShowPreferences, "Open preferences menu")
+        sub(self.ShowServerOptions, "Open server menu")
         # sub(self._ShowHelpMessage, 'Show help message')
         sub(self._ShowImportNetwork, "Show retrieve dicom panel")
         sub(self._ShowImportBitmap, "Show import bitmap panel in frame")
@@ -582,6 +583,8 @@ class Frame(wx.Frame):
             self.ShowGettingStarted()
         elif id == const.ID_PREFERENCES or id == const.ID_PREFERENCES_TOOLBAR:
             self.ShowPreferences()
+        elif id == const.ID_SERVER:
+            self.ShowServerOptions()
         elif id == const.ID_DICOM_NETWORK:
             self.ShowRetrieveDicomPanel()
         elif id in (const.ID_FLIP_X, const.ID_FLIP_Y, const.ID_FLIP_Z):
@@ -789,6 +792,12 @@ class Frame(wx.Frame):
             Publisher.sendMessage("Update Slice Interpolation MenuBar")
             Publisher.sendMessage("Update Navigation Mode MenuBar")
             Publisher.sendMessage("Update Surface Interpolation")
+    
+
+    def ShowServerOptions(self, page=0):
+        server_dialog = server.Server(self, page)
+        server_dialog.LoadServer()
+        server_dialog.Center()
 
     def ShowAbout(self):
         """
@@ -1379,6 +1388,8 @@ class MenuBar(wx.MenuBar):
         self.mode_menu.Check(const.ID_MODE_NAVIGATION, v)
 
         self.actived_navigation_mode = self.mode_menu
+
+        self.mode_menu.Append(const.ID_SERVER, _("Server"))
 
         plugins_menu = wx.Menu()
         plugins_menu.Append(const.ID_PLUGINS_SHOW_PATH, _("Open Plugins folder"))
